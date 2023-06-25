@@ -29,7 +29,13 @@ const getUserById = (req, res) => {
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((result) => res.status(201).send(result))
+    .then((result) => {
+      if (result) {
+        res.status(201).send(result);
+      } else {
+        res.status(400).send({ message: 'Произошла ошибка при добавлении пользователя' });
+      }
+    })
     .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
@@ -41,9 +47,16 @@ const updateUser = (req, res) => {
     { name, about },
     { new: true, runValidators: true, upsert: false }
   )
-    .then((result) => res.status(200).send(result))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+    .then((result) => {
+      if (result) {
+        res.status(200).send(result);
+      } else {
+        res.status(400).send({ message: 'Произошла ошибка при обновлении пользователя' });
+      }
+    })
+    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
+
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
@@ -51,8 +64,14 @@ const updateAvatar = (req, res) => {
     { avatar },
     { new: true, runValidators: true, upsert: false }
   )
-    .then((result) => res.status(200).send(result))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+    .then((result) => {
+      if (result) {
+        res.status(200).send(result);
+      } else {
+        res.status(400).send({ message: 'Произошла ошибка при обновлении аватара' });
+      }
+    })
+    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
 module.exports = {
