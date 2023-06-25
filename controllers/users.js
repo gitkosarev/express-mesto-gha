@@ -10,7 +10,7 @@ const getUsers = (req, res) => {
         res.status(404).send({ message: 'Пользователи не найдены.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 const getUserById = (req, res) => {
@@ -22,7 +22,7 @@ const getUserById = (req, res) => {
         res.status(404).send({ message: 'Пользователь не найден.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 // METHOD: POST
@@ -36,7 +36,7 @@ const createUser = (req, res) => {
         res.status(400).send({ message: 'Произошла ошибка при добавлении пользователя' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 // METHOD: PATCH
@@ -54,7 +54,7 @@ const updateUser = (req, res) => {
         res.status(400).send({ message: 'Произошла ошибка при обновлении пользователя' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 const updateAvatar = (req, res) => {
@@ -71,7 +71,7 @@ const updateAvatar = (req, res) => {
         res.status(400).send({ message: 'Произошла ошибка при обновлении аватара' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 module.exports = {

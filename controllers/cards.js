@@ -7,10 +7,10 @@ module.exports.getCards = (req, res) => {
       if (result) {
         res.send(result);
       } else {
-        res.status(404).send({ message: 'Данные не найдены.' });
+        res.status(404).send({ message: 'Карточка не найдена.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 module.exports.getCardById = (req, res) => {
@@ -22,7 +22,7 @@ module.exports.getCardById = (req, res) => {
         res.status(404).send({ message: 'Карточка не найдена.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 // METHOD: POST
@@ -37,7 +37,7 @@ module.exports.createCard = (req, res) => {
         res.status(400).send({ message: 'Ошибка при добавлении карточки.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 // METHOD: DELETE
@@ -47,10 +47,10 @@ module.exports.deleteCard = (req, res) => {
       if (result) {
         res.status(200).send(result);
       } else {
-        res.status(400).send({ message: 'Ошибка при удалении карточки.' });
+        res.status(404).send({ message: 'Карточка не найдена.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 module.exports.deleteLike = (req, res) => {
@@ -63,10 +63,10 @@ module.exports.deleteLike = (req, res) => {
       if (result) {
         res.status(200).send(result);
       } else {
-        res.status(400).send({ message: 'Ошибка при удалении лайка.' });
+        res.status(404).send({ message: 'Карточка не найдена.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
 
 // METHOD: PUT
@@ -80,8 +80,8 @@ module.exports.putLike = (req, res) => {
       if (result) {
         res.status(200).send(result);
       } else {
-        res.status(400).send({ message: 'Ошибка при добавлении лайка.' });
+        res.status(404).send({ message: 'Карточка не найдена.' });
       }
     })
-    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: 'Internal Server Error', error: err.message }));
 };
