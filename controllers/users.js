@@ -21,7 +21,7 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((result) => res.status(201).send({ data: result }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
 // METHOD: PATCH
