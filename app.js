@@ -19,7 +19,8 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`App listening on port ${PORT}`);
+app.use((req, res) => {
+  res.status(404).send({ message: `Машрут ${req.path} не найден` });
 });
+
+app.listen(PORT);
