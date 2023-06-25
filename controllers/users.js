@@ -3,7 +3,10 @@ const User = require('../models/user');
 // METHOD: GET
 const getUsers = (req, res) => {
   User.find()
-    .then((result) => res.status(200).send({ data: result }))
+    .then((result) => {
+      if (!result) { res.status(404).send({ message: 'Пользователи не найдены.' }); }
+      res.send({ data: result });
+    })
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 

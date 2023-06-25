@@ -3,13 +3,19 @@ const Card = require('../models/card');
 // METHOD: GET
 module.exports.getCards = (req, res) => {
   Card.find()
-    .then((result) => res.status(200).send({ data: result }))
+    .then((result) => {
+      if (!result) { res.status(404).send({ message: 'Данные не найдены.' }); }
+      res.send({ data: result });
+    })
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
 module.exports.getCardById = (req, res) => {
   Card.findById(req.params.cardId)
-    .then((result) => res.status(200).send({ data: result }))
+    .then((result) => {
+      if (!result) { res.status(404).send({ message: 'Карточка не найдена.' }); }
+      res.send({ data: result });
+    })
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
