@@ -10,7 +10,7 @@ const handleCatchedError = (err, res) => {
   } else if (err.message.includes('Validation failed')) {
     res.status(400).send({ message: `Данные не прошли валидацию: ${err.message}` });
   } else {
-    res.status(500).send({ message: 'Internal Server Error', error: err.message });
+    res.status(400).send({ message: 'Internal Server Error', error: err.message });
   }
 };
 
@@ -33,7 +33,7 @@ const getUserById = (req, res) => {
       if (result) {
         res.status(200).send(result);
       } else {
-        throw new NotFoundError('Пользователи не найдены.');
+        throw new NotFoundError('Пользователь не найден.');
       }
     })
     .catch((err) => handleCatchedError(err, res));
