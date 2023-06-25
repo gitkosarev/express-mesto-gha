@@ -10,7 +10,7 @@ const getUsers = (req, res) => {
         res.status(404).send({ message: 'Пользователи не найдены.' });
       }
     })
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
 const getUserById = (req, res) => {
