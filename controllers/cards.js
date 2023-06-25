@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 
-// region: GET
+// METHOD: GET
 module.exports.getCards = (req, res) => {
   Card.find()
     .then((result) => res.status(200).send({ data: result }))
@@ -13,7 +13,7 @@ module.exports.getCardById = (req, res) => {
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
-// region: POST
+// METHOD: POST
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
@@ -22,9 +22,30 @@ module.exports.createCard = (req, res) => {
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
-// region: DELETE
+// METHOD: DELETE
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .then((result) => res.status(200).send({ data: result }))
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+};
+
+module.exports.deleteLike = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((result) => res.status(200).send({ data: result }))
+    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+};
+
+// METHOD: PUT
+module.exports.putLike = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
     .then((result) => res.status(200).send({ data: result }))
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };

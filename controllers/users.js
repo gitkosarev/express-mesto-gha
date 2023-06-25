@@ -1,6 +1,6 @@
 const User = require('../models/user');
 
-// region: GET
+// METHOD: GET
 const getUsers = (req, res) => {
   User.find()
     .then((result) => res.status(200).send({ data: result }))
@@ -13,7 +13,7 @@ const getUserById = (req, res) => {
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
-// region: POST
+// METHOD: POST
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
@@ -21,12 +21,11 @@ const createUser = (req, res) => {
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
-// region: PATCH
+// METHOD: PATCH
 const updateUser = (req, res) => {
-  const owner = req.user._id;
   const { name, about } = req.body;
   User.findByIdAndUpdate(
-    owner,
+    req.user._id,
     { name, about },
     { new: true, runValidators: true, upsert: false }
   )
@@ -34,10 +33,9 @@ const updateUser = (req, res) => {
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 const updateAvatar = (req, res) => {
-  const owner = req.user._id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(
-    owner,
+    req.user._id,
     { avatar },
     { new: true, runValidators: true, upsert: false }
   )
