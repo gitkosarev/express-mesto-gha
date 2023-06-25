@@ -7,6 +7,8 @@ const handleCatchedError = (err, res) => {
     res.status(err.statusCode).send({ message: err.message });
   } else if (err instanceof BadRequestError) {
     res.status(err.statusCode).send({ message: err.message });
+  } else if (err.message.includes('Validation failed')) {
+    res.status(400).send({ message: `Данные не прошли валидацию: ${err.message}` });
   } else {
     res.status(500).send({ message: 'Internal Server Error', error: err.message });
   }
