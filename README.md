@@ -1,7 +1,7 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
-Frontend React: https://github.com/gitkosarev/react-mesto-auth
-Backend JavaScript + ExpressJs + NodeJs: https://github.com/gitkosarev/express-mesto-gha
+- Frontend React: https://github.com/gitkosarev/react-mesto-auth
+- Backend JavaScript + ExpressJs + NodeJs: https://github.com/gitkosarev/express-mesto-gha
 
 ## Директории
 
