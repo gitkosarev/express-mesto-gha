@@ -4,23 +4,32 @@ const User = require('../models/user');
 const getUsers = (req, res) => {
   User.find()
     .then((result) => {
-      if (!result) { res.status(404).send({ message: 'Пользователи не найдены.' }); }
-      res.send({ data: result });
+      if (result) {
+        res.send(result);
+      } else {
+        res.status(404).send({ message: 'Пользователи не найдены.' });
+      }
     })
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((result) => res.status(200).send({ data: result }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
+    .then((result) => {
+      if (result) {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send({ message: 'Пользователь не найден.' });
+      }
+    })
+    .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
 // METHOD: POST
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((result) => res.status(201).send({ data: result }))
+    .then((result) => res.status(201).send(result))
     .catch((err) => res.status(400).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
@@ -32,7 +41,7 @@ const updateUser = (req, res) => {
     { name, about },
     { new: true, runValidators: true, upsert: false }
   )
-    .then((result) => res.status(200).send({ data: result }))
+    .then((result) => res.status(200).send(result))
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 const updateAvatar = (req, res) => {
@@ -42,7 +51,7 @@ const updateAvatar = (req, res) => {
     { avatar },
     { new: true, runValidators: true, upsert: false }
   )
-    .then((result) => res.status(200).send({ data: result }))
+    .then((result) => res.status(200).send(result))
     .catch((err) => res.status(500).send({ message: `Произошла ошибка: ${err.message}` }));
 };
 
