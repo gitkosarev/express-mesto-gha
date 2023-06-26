@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 app.use(router);
 
 app.use((req, res) => {
-  res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ messge: `Машрут ${req.path} не найден` });
+  res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ message: `Машрут ${req.path} не найден` });
 });
 
 app.listen(PORT);
