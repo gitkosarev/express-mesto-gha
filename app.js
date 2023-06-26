@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRouter = require('./routes/users');
-const cardRouter = require('./routes/cards');
+const statusCode = require('http2').constants;
+const router = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -16,11 +16,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', userRouter);
-app.use('/cards', cardRouter);
+app.use(router);
 
 app.use((req, res) => {
-  res.status(404).send({ message: `Машрут ${req.path} не найден` });
+  res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ messge: `Машрут ${req.path} не найден` });
 });
 
 app.listen(PORT);
