@@ -1,65 +1,48 @@
-const mongooseError = require('mongoose').Error;
 const statusCode = require('http2').constants;
-const Card = require('../models/card');
-const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
 
-const handleCatchedError = (err, res) => {
-  if (err instanceof NotFoundError) {
-    res.status(err.statusCode).send({ message: err.message });
-  } else if (err instanceof BadRequestError) {
-    res.status(err.statusCode).send({ message: err.message });
-  } else if (err instanceof mongooseError.ValidationError) {
-    res.status(statusCode.HTTP_STATUS_BAD_REQUEST).send({ message: `Данные не прошли валидацию: ${err.message}` });
-  } else if (err instanceof mongooseError.CastError) {
-    res.status(statusCode.HTTP_STATUS_BAD_REQUEST).send({ message: `Некоректный Id: ${err.message}` });
-  } else if (err instanceof mongooseError.DocumentNotFoundError) {
-    res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ message: `Объект ${Card.modelName} не найден: ${err.message}` });
-  } else {
-    res.status(statusCode.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: `Internal Server Error: ${err.message}` });
-  }
-};
+const Card = require('../models/card');
+const errorHandler = require('../middlewares/error-handler');
 
 // METHOD: GET
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find()
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
-module.exports.getCardById = (req, res) => {
+module.exports.getCardById = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail()
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
 // METHOD: POST
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((result) => {
       res.status(statusCode.HTTP_STATUS_CREATED).send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
 // METHOD: DELETE
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
     .orFail()
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
-module.exports.deleteLike = (req, res) => {
+module.exports.deleteLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -69,11 +52,11 @@ module.exports.deleteLike = (req, res) => {
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
 // METHOD: PUT
-module.exports.putLike = (req, res) => {
+module.exports.putLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -83,5 +66,5 @@ module.exports.putLike = (req, res) => {
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };

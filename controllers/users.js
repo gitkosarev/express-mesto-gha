@@ -1,55 +1,30 @@
-const mongooseError = require('mongoose').Error;
 const statusCode = require('http2').constants;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
-
-const handleCatchedError = (err, res) => {
-  if (err instanceof NotFoundError) {
-    res.status(err.statusCode).send({ message: err.message });
-  } else if (err instanceof BadRequestError) {
-    res.status(err.statusCode).send({ message: err.message });
-  } else if (err instanceof UnauthorizedError) {
-    res.status(err.statusCode).send({ message: err.message });
-  } else if (err instanceof mongooseError.ValidationError) {
-    res.status(statusCode.HTTP_STATUS_BAD_REQUEST).send({ message: `Данные не прошли валидацию: ${err.message}` });
-  } else if (err instanceof mongooseError.CastError) {
-    res.status(statusCode.HTTP_STATUS_BAD_REQUEST).send({ message: `Некоректный Id: ${err.message}` });
-  } else if (err instanceof mongooseError.DocumentNotFoundError) {
-    res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ message: `Объект ${User.modelName} не найден: ${err.message}` });
-  } else {
-    if (err.code === 11000) {
-      res.status(statusCode.HTTP_STATUS_BAD_REQUEST).send({ message: `Дубль уникальных данных: ${err.message}` });
-      return;
-    }
-    res.status(statusCode.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error', error: err.message });
-  }
-};
+const errorHandler = require('../middlewares/error-handler');
 
 // METHOD: GET
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find()
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.user._id)
     .orFail()
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
 // METHOD: POST
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -60,10 +35,10 @@ const login = (req, res) => {
       );
       res.send({ token });
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -74,11 +49,11 @@ const createUser = (req, res) => {
     .then((result) => {
       res.status(statusCode.HTTP_STATUS_CREATED).send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
 // METHOD: PATCH
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -89,10 +64,10 @@ const updateUser = (req, res) => {
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -103,7 +78,7 @@ const updateAvatar = (req, res) => {
     .then((result) => {
       res.send(result);
     })
-    .catch((err) => handleCatchedError(err, res));
+    .catch((err) => errorHandler(err, res, next));
 };
 
 module.exports = {
