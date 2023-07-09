@@ -42,22 +42,22 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = (email, password) => {
-  this.findOne({ email }).select('+password')
+function findUserByCredentials(email, password) {
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Неправильные почта или пароль');
-      } else {
-        return bcrypt.compare(password, user.password)
-          .then((success) => {
-            if (!success) {
-              throw new UnauthorizedError('Неправильные почта или пароль');
-            } else {
-              return user;
-            }
-          });
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
       }
+      return bcrypt.compare(password, user.password)
+        .then((success) => {
+          if (!success) {
+            return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+          }
+          return user;
+        });
     });
-};
+}
+
+userSchema.statics.findUserByCredentials = findUserByCredentials;
 
 module.exports = mongoose.model('user', userSchema);
