@@ -22,6 +22,10 @@ const handleCatchedError = (err, res) => {
   } else if (err instanceof mongooseError.DocumentNotFoundError) {
     res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ message: `Объект ${User.modelName} не найден: ${err.message}` });
   } else {
+    if (err.code === 11000) {
+      res.status(statusCode.HTTP_STATUS_BAD_REQUEST).send({ message: `Дубль уникальных данных: ${err.message}` });
+      return;
+    }
     res.status(statusCode.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error', error: err.message });
   }
 };
