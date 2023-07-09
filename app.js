@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const statusCode = require('http2').constants;
 const router = require('./routes/index');
 const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -15,15 +16,16 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-/* app.use((req, res, next) => {
-  req.user = { _id: '6497e58b2c6d91b628f097b2' };
-  next();
-}); */
-
+app.use(auth);
 app.use(router);
 
 app.use((req, res) => {
   res.status(statusCode.HTTP_STATUS_NOT_FOUND).send({ message: `Машрут ${req.path} не найден` });
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({ message: err.message });
+  next();
 });
 
 app.listen(PORT);
