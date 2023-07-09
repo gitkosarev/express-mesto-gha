@@ -40,7 +40,7 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(cardId)
     .orFail()
     .then((result) => {
-      if (result.owner !== currentUserId) {
+      if (String(result.owner) !== currentUserId) {
         return Promise.reject(new ForbiddenError('Удалять чужие карточки запрещено.'));
       }
       return Card.findByIdAndRemove(cardId)
