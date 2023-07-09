@@ -51,7 +51,7 @@ module.exports.createCard = (req, res) => {
 
 // METHOD: DELETE
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
     .orFail()
     .then((result) => {
       res.send(result);
