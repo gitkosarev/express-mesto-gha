@@ -5,8 +5,7 @@ const {
 
 // region: GET
 router.get('/', getUsers);
-
-router.get('/:userId', getUserById);
+router.patch('/me', getUserById);
 
 // region: PATCH
 router.patch('/me', updateUser);
