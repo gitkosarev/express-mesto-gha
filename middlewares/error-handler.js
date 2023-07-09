@@ -5,10 +5,13 @@ const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const ConflictError = require('../errors/ConflictError');
 const InternalServerError = require('../errors/InternalServerError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports = (err, res, next) => {
   if (err instanceof NotFoundError) {
     next(new NotFoundError(err.message));
+  } else if (err instanceof ForbiddenError) {
+    next(new ForbiddenError(err.message));
   } else if (err instanceof BadRequestError) {
     next(new BadRequestError(err.message));
   } else if (err instanceof UnauthorizedError) {

@@ -2,6 +2,7 @@ const statusCode = require('http2').constants;
 
 const Card = require('../models/card');
 const errorHandler = require('../middlewares/error-handler');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 // METHOD: GET
 module.exports.getCards = (req, res, next) => {
@@ -34,10 +35,18 @@ module.exports.createCard = (req, res, next) => {
 
 // METHOD: DELETE
 module.exports.deleteCard = (req, res, next) => {
-  Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
+  const currentUserId = req.user._id;
+  const { cardId } = req.params;
+  Card.findById(cardId)
     .orFail()
     .then((result) => {
-      res.send(result);
+      if (result.owner !== currentUserId) {
+        return Promise.reject(new ForbiddenError('Удалять чужие карточки запрещено.'));
+      }
+      return Card.findByIdAndRemove(cardId)
+        .orFail()
+        .then((removedResult) => res.send(removedResult))
+        .catch((err) => errorHandler(err, res, next));
     })
     .catch((err) => errorHandler(err, res, next));
 };
