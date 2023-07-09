@@ -9,7 +9,7 @@ const {
 // region: GET
 router.get('/', getUsers);
 
-router.patch('/me', getUserById);
+router.get('/me', getUserById);
 
 // region: PATCH
 router.patch('/me', celebrate({
