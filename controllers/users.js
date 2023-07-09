@@ -14,8 +14,17 @@ const getUsers = (req, res, next) => {
     .catch((err) => errorHandler(err, res, next));
 };
 
-const getUserById = (req, res, next) => {
+const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
+    .orFail()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => errorHandler(err, res, next));
+};
+
+const getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
     .orFail()
     .then((result) => {
       res.send(result);
@@ -90,6 +99,7 @@ const updateAvatar = (req, res, next) => {
 module.exports = {
   getUsers,
   getUserById,
+  getCurrentUser,
   login,
   createUser,
   updateUser,
