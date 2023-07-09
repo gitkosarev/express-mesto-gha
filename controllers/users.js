@@ -47,7 +47,13 @@ const createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     }))
     .then((result) => {
-      res.status(statusCode.HTTP_STATUS_CREATED).send(result);
+      res.status(statusCode.HTTP_STATUS_CREATED).send({
+        _id: result._id,
+        email: result.email,
+        name: result.name,
+        about: result.about,
+        avatar: result.avatar,
+      });
     })
     .catch((err) => errorHandler(err, res, next));
 };
