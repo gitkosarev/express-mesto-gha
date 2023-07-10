@@ -26,6 +26,6 @@ module.exports = (err, res, next) => {
     if (err.code === 11000) {
       next(new ConflictError(`Дубль уникальных данных: ${err.message}`));
     }
-    next(new InternalServerError(`Internal Server Error: ${err.message}`));
+    next(new InternalServerError('На сервере произошла ошибка'));
   }
 };

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const errorHandler = require('../middlewares/error-handler');
+const { secret } = require('../utils/constants');
 
 // METHOD: GET
 const getUsers = (req, res, next) => {
@@ -39,7 +40,7 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        'abrakadabra',
+        secret,
         { expiresIn: '7d' },
       );
       res.send({ token });
